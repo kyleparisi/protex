@@ -9,7 +9,7 @@ echo Cleaning up
 docker stop $APP_NAME-mysql
 }" EXIT
 
-echo Starting $APP_NAME-mysql
+echo Starting services:
 docker start $APP_NAME-mysql || docker run --name $APP_NAME-mysql -e MYSQL_ROOT_PASSWORD=$DB_PASSWORD -e MYSQL_DATABASE=$DB_DATABASE -p $DB_PORT:$DB_PORT -d mysql
 until mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE --silent -e "STATUS;"
 do
@@ -17,4 +17,5 @@ do
   sleep 5
 done
 
+echo Running tests:
 mix test
