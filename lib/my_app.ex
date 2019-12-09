@@ -7,8 +7,7 @@ defmodule MyApp.App do
        scheme: :http,
        plug: nil,
        options: [
-         dispatch: dispatch(),
-         port: 4001
+         dispatch: dispatch()
        ]},
       {MyXQL,
        username: System.get_env("DB_USERNAME"),
