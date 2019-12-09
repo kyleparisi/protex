@@ -7,6 +7,12 @@ defmodule Router do
       validate_not_empty("password", conn.body_params["password"])
     ]
 
+  def validate_body("POST", ["sign-up"], conn),
+    do: [
+      validate_not_empty("email", conn.body_params["email"]),
+      validate_not_empty("password", conn.body_params["password"])
+    ]
+
   def validate_body(_, _, _), do: []
 
   def validate_path("GET", ["user", id], _conn), do: [validate_integer("id", id)]
@@ -31,6 +37,27 @@ defmodule Router do
   def match("POST", ["echo"], conn) do
     IO.inspect(conn.body_params)
     conn.body_params
+  end
+
+  def match("POST", ["sign-up"], conn) do
+    %{"email" => email, "password" => password} = conn.body_params
+
+    not_a_user =
+      "SELECT * FROM user where email = ? LIMIT 1;" |> DB.query(:db, [email]) |> Enum.empty?()
+
+    if not_a_user do
+      hash = Argon2.hash_pwd_salt(conn.body_params["password"])
+
+      %{id: id} = "INSERT INTO user SET email=?, password=?, forgot_token=?, verified_email=?, role='user'"
+      |> DB.query(:db, [email, hash, "", false])
+
+      IO.inspect "user id: #{id}"
+      conn = Plug.Conn.put_session(conn, :user_id, id)
+
+      {:conn, conn, "Ok"}
+    end
+
+    #   Plug.Conn.put_resp_header("location", "/dashboard")
   end
 
   def match("GET", ["session"], conn) do

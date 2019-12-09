@@ -10,7 +10,6 @@ defmodule MySession do
   end
 
   def get(_conn, sid, _opts) do
-    IO.puts("get session")
     session = "SELECT data FROM session WHERE sid = ? LIMIT 1;" |> DB.query(:db, [sid]) |> hd
     {:ok, data} = Poison.decode(session["data"])
 
@@ -22,7 +21,6 @@ defmodule MySession do
   end
 
   def put(_conn, nil, data, _opts) do
-    IO.puts("new session")
     sid = generate_random_key()
     now = DateTime.utc_now()
     datetime = DateTime.to_string(%{now | microsecond: {0, 0}}) |> String.replace("Z", "")
@@ -35,7 +33,6 @@ defmodule MySession do
   end
 
   def put(_conn, sid, data, _opts) do
-    IO.puts("put session")
     "UPDATE session SET data = ? WHERE sid = ? LIMIT 1;" |> DB.query(:db, [data, sid])
     sid
   end

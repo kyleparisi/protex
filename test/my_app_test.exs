@@ -51,4 +51,25 @@ defmodule MyAppTest do
     assert !String.contains?(conn.resp_body, ["Missing email"])
     assert String.contains?(conn.resp_body, ["Missing password"])
   end
+
+  test "/sign-up with no email or password" do
+    conn =
+      :post
+      |> conn("/sign-up", "")
+      |> Pipeline.call([])
+
+    assert conn.status == 422
+    assert String.contains?(conn.resp_body, ["Missing email", "Missing password"])
+  end
+
+  test "/sign-up" do
+    conn =
+      :post
+      |> conn("/sign-up", %{email: "test@test.com", password: "test"})
+      |> Pipeline.call([])
+
+    session = Plug.Conn.get_session(conn)
+    assert session["user_id"] == 1
+    assert conn.status == 301
+  end
 end

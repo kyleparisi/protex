@@ -25,7 +25,8 @@ defmodule MyApp.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:poison, "~> 3.1"},
       {:myxql, "~> 0.2.0"},
-      {:phoenix_pubsub, "~> 2.0-dev", github: "phoenixframework/phoenix_pubsub"}
+      {:phoenix_pubsub, "~> 2.0-dev", github: "phoenixframework/phoenix_pubsub"},
+      {:argon2_elixir, "~> 2.0"}
     ]
   end
 end

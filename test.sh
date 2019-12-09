@@ -8,8 +8,12 @@ docker start $APP_NAME-mysql || docker run --name $APP_NAME-mysql -e MYSQL_ROOT_
 until mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE --silent -e "STATUS;"
 do
   echo "Waiting for database connection..."
-  sleep 5
+  sleep 1
 done
+
+echo Running migrations:
+mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/user.sql
+mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/session.sql
 
 echo Running tests:
 mix test
