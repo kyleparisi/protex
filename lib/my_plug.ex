@@ -33,6 +33,10 @@ defmodule MyPlug do
           json when is_map(json) ->
             json_resp(conn, 200, json)
 
+          {:redirect, location} ->
+            conn = put_resp_header(conn, "location", location)
+            send_resp(conn, 301, "")
+
           {:render, template_path, data} ->
             body = EEx.eval_file(template_path, Map.to_list(data))
             send_resp(conn, 200, "#{body}")

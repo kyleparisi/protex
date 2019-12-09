@@ -54,10 +54,8 @@ defmodule Router do
       IO.inspect "user id: #{id}"
       conn = Plug.Conn.put_session(conn, :user_id, id)
 
-      {:conn, conn, "Ok"}
+      {:conn, conn, {:redirect, "/dashboard"}}
     end
-
-    #   Plug.Conn.put_resp_header("location", "/dashboard")
   end
 
   def match("GET", ["session"], conn) do
