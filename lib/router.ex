@@ -4,7 +4,7 @@ defmodule Router do
   def validate_body("POST", ["login"], conn),
     do: [
       validate_not_empty("email", conn.body_params["email"]),
-      validate_not_empty("password", conn.body_params["email"])
+      validate_not_empty("password", conn.body_params["password"])
     ]
 
   def validate_body(_, _, _), do: []

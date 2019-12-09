@@ -20,7 +20,7 @@ defmodule BodyValidator do
     if Enum.empty?(errors) do
       conn
     else
-      Logger.info("Body failed validations: #{inspect errors}")
+      Logger.info("Body failed validations: #{inspect(errors)}")
       json_resp(conn, 422, errors) |> halt
     end
   end
