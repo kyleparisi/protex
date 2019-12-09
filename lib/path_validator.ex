@@ -2,6 +2,8 @@ defmodule PathValidator do
   import Plug.Conn
   import Responses
 
+  require Logger
+
   def init(opts), do: opts
 
   def call(conn, _opts) do
