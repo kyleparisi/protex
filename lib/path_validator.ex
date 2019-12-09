@@ -1,6 +1,5 @@
 defmodule PathValidator do
   import Plug.Conn
-  import Responses
 
   require Logger
 

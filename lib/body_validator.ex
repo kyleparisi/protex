@@ -1,6 +1,5 @@
 defmodule BodyValidator do
   import Plug.Conn
-  import Responses
 
   require Logger
 
