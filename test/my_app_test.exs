@@ -72,4 +72,15 @@ defmodule MyAppTest do
     assert session["user_id"] == 1
     assert conn.status == 301
   end
+
+  test "/sign-up when user already exists" do
+    conn =
+      :post
+      |> conn("/sign-up", %{email: "test@test.com", password: "test"})
+      |> Pipeline.call([])
+
+    IO.inspect conn.resp_body
+    assert String.contains?(conn.resp_body, ["User already exists"])
+    assert conn.status == 422
+  end
 end

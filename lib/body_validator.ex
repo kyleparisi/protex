@@ -21,7 +21,7 @@ defmodule BodyValidator do
       conn
     else
       Logger.info("Body failed validations: #{inspect(errors)}")
-      json_resp(conn, 422, errors) |> halt
+      assign(conn, :errors, errors)
     end
   end
 end

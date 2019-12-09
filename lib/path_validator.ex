@@ -19,7 +19,8 @@ defmodule PathValidator do
       params = Enum.into(validations, %{})
       put_in(conn.path_params, params)
     else
-      json_resp(conn, 422, errors) |> halt
+      Logger.info("Path failed validations: #{inspect(errors)}")
+      assign(conn, :errors, errors)
     end
   end
 end

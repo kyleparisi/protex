@@ -38,11 +38,16 @@ defmodule MyPlug do
             send_resp(conn, 301, "")
 
           {:render, template_path, data} ->
-            body = EEx.eval_file(template_path, Map.to_list(data))
+            body = EEx.eval_file(template_path, assigns: Map.to_list(data))
             send_resp(conn, 200, "#{body}")
 
           {http_code, body} ->
-            send_resp(conn, http_code, "#{body}\n")
+            case body do
+              json when is_map(json) ->
+                json_resp(conn, http_code, json)
+              _ ->
+                send_resp(conn, http_code, "#{body}\n")
+            end
 
           _ ->
             send_resp(conn, 200, "#{res}\n")

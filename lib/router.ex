@@ -39,6 +39,14 @@ defmodule Router do
     conn.body_params
   end
 
+  def match("GET", ["sign-up"], _conn) do
+    {:render, "views/sign-up.html.eex", %{}}
+  end
+
+  def match("POST", ["sign-up"], %{assigns: %{errors: errors}} = conn) do
+    {:render, "views/sign-up.html.eex", %{errors: errors, email: conn.body_params["email"]}}
+  end
+
   def match("POST", ["sign-up"], conn) do
     %{"email" => email, "password" => password} = conn.body_params
 
@@ -46,7 +54,7 @@ defmodule Router do
       "SELECT * FROM user where email = ? LIMIT 1;" |> DB.query(:db, [email]) |> Enum.empty?()
 
     if not_a_user do
-      hash = Argon2.hash_pwd_salt(conn.body_params["password"])
+      hash = Argon2.hash_pwd_salt(password)
 
       %{id: id} = "INSERT INTO user SET email=?, password=?, forgot_token=?, verified_email=?, role='user'"
       |> DB.query(:db, [email, hash, "", false])
@@ -55,6 +63,8 @@ defmodule Router do
       conn = Plug.Conn.put_session(conn, :user_id, id)
 
       {:conn, conn, {:redirect, "/dashboard"}}
+    else
+      {:render, "views/sign-up.html.eex", %{errors: %{exists: "User already exists."}, email: email}}
     end
   end
 
