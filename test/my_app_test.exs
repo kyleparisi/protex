@@ -1,8 +1,18 @@
 defmodule MyAppTest do
   use ExUnit.Case
-  doctest MyApp
+  use Plug.Test
+  doctest MyApp.App
 
-  test "greets the world" do
-    assert MyApp.hello() == :world
+  test "/health returns ok" do
+    conn =
+      :get
+      |> conn("/health", "")
+      |> MyPlug.call([])
+
+    assert conn.state == :sent
+    assert conn.status == 200
+    assert conn.resp_body == "Ok\n"
   end
+
+
 end
