@@ -2,6 +2,8 @@ defmodule BodyValidator do
   import Plug.Conn
   import Responses
 
+  require Logger
+
   def init(opts), do: opts
 
   def call(conn, _opts) do
@@ -18,6 +20,7 @@ defmodule BodyValidator do
     if Enum.empty?(errors) do
       conn
     else
+      Logger.info("Body failed validations: #{inspect errors}")
       json_resp(conn, 422, errors) |> halt
     end
   end
