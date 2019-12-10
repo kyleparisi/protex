@@ -96,5 +96,17 @@ defmodule MyAppTest do
       |> Pipeline.call([])
 
     assert conn.status == 301
+    assert Plug.Conn.get_resp_header(conn, "location") == ["/login"]
+  end
+
+  test "/dashboard when logged in" do
+    conn =
+      :get
+      |> conn("/dashboard")
+      |> init_test_session(%{"user_id" => 1})
+      |> Pipeline.call([])
+
+    assert conn.status == 200
+    assert conn.resp_body == "Ok\n"
   end
 end

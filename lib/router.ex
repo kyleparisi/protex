@@ -113,8 +113,7 @@ defmodule Router do
   end
 
   def match("GET", ["dashboard"], conn), do: is_logged_in(fn ->
-    IO.puts "wat"
-    IO.inspect(Plug.Conn.get_session(conn))
+    "Ok"
   end)
 
   def match(_, _, _) do
