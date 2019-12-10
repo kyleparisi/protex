@@ -36,12 +36,37 @@ defmodule Router do
     "SELECT * FROM user where id = ?" |> DB.query(:db, [conn.path_params["id"]]) |> hd
   end
 
-  def match("GET", "/login", _conn) do
+  def match("GET", "login", _conn) do
     {:render, "views/login.html.eex", %{}}
   end
 
   def match("POST", ["login"], %{assigns: %{errors: errors}} = conn) do
     {:render, "views/login.html.eex", %{errors: errors, email: conn.body_params["email"]}}
+  end
+
+  def match("POST", ["login"], conn) do
+    %{"email" => email, "password" => password} = conn.body_params
+
+    user = "SELECT * FROM user WHERE email = ? LIMIT 1;" |> DB.query(:db, [email])
+    is_a_user = length(user) == 1
+
+    if is_a_user do
+      user = user |> hd
+
+      if Argon2.verify_pass(password, user["password"]) do
+        conn = Plug.Conn.put_session(conn, :user_id, user["id"])
+        {:conn, conn, {:redirect, "/dashboard"}}
+      else
+        Logger.info("Incorrect password attempt. #{email}")
+        {:render, "views/login.html.eex",
+          %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
+      end
+
+    else
+      Logger.info("Not a user login attempt. #{email}")
+      {:render, "views/login.html.eex",
+        %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
+    end
   end
 
   def match("GET", ["sign-up"], _conn) do
@@ -56,7 +81,7 @@ defmodule Router do
     %{"email" => email, "password" => password} = conn.body_params
 
     not_a_user =
-      "SELECT * FROM user where email = ? LIMIT 1;" |> DB.query(:db, [email]) |> Enum.empty?()
+      "SELECT * FROM user WHERE email = ? LIMIT 1;" |> DB.query(:db, [email]) |> Enum.empty?()
 
     if not_a_user do
       hash = Argon2.hash_pwd_salt(password)
@@ -67,6 +92,7 @@ defmodule Router do
 
       conn = Plug.Conn.put_session(conn, :user_id, id)
 
+      Logger.info("User successfully signed up. #{email}")
       {:conn, conn, {:redirect, "/dashboard"}}
     else
       Logger.info("User already exists. #{email}")

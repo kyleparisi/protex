@@ -61,7 +61,7 @@ defmodule MyAppTest do
   test "/sign-up" do
     conn =
       :post
-      |> conn("/sign-up", %{email: "test@test.com", password: "test"})
+      |> conn("/sign-up", %{"email" => "test@test.com", "password" => "test"})
       |> Pipeline.call([])
 
     session = Plug.Conn.get_session(conn)
@@ -76,5 +76,16 @@ defmodule MyAppTest do
       |> Pipeline.call([])
 
     assert String.contains?(conn.resp_body, ["User already exists"])
+  end
+
+  test "/login" do
+    conn =
+      :post
+      |> conn("/login", %{"email" => "test@test.com", "password" => "test"})
+      |> Pipeline.call([])
+
+    assert conn.status == 301
+    session = Plug.Conn.get_session(conn)
+    assert session["user_id"] == 1
   end
 end
