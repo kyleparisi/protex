@@ -36,7 +36,7 @@ defmodule Router do
     "SELECT * FROM user where id = ?" |> DB.query(:db, [conn.path_params["id"]]) |> hd
   end
 
-  def match("GET", "/login", conn) do
+  def match("GET", "/login", _conn) do
     {:render, "views/login.html.eex", %{}}
   end
 

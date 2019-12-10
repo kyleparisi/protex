@@ -18,8 +18,6 @@ defmodule MyApp.App do
       {Phoenix.PubSub, name: MyApp.PubSub}
     ]
 
-    Application.put_env(:myxql, :json_library, Poison, [])
-
     opts = [strategy: :one_for_one, name: MyApp.Supervisor]
     Supervisor.start_link(children, opts)
   end
