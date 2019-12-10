@@ -50,22 +50,18 @@ defmodule Router do
     user = "SELECT * FROM user WHERE email = ? LIMIT 1;" |> DB.query(:db, [email])
     is_a_user = length(user) == 1
 
-    if is_a_user do
-      user = user |> hd
-
-      if Argon2.verify_pass(password, user["password"]) do
+    case validate_login({:is_a_user, is_a_user, user, password}) do
+      {:ok, user} ->
         conn = Plug.Conn.put_session(conn, :user_id, user["id"])
         {:conn, conn, {:redirect, "/dashboard"}}
-      else
-        Logger.info("Incorrect password attempt. #{email}")
+      {:not_a_user} ->
+        Logger.info("Not a user login attempt. #{email}")
         {:render, "views/login.html.eex",
           %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
-      end
-
-    else
-      Logger.info("Not a user login attempt. #{email}")
-      {:render, "views/login.html.eex",
-        %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
+      {:incorrect_password} ->
+        Logger.info("Incorrect password login attempt. #{email}")
+        {:render, "views/login.html.eex",
+          %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
     end
   end
 
