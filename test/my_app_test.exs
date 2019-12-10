@@ -88,4 +88,13 @@ defmodule MyAppTest do
     session = Plug.Conn.get_session(conn)
     assert session["user_id"] == 1
   end
+
+  test "/dashboard restricted to logged in users" do
+    conn =
+      :get
+      |> conn("/dashboard")
+      |> Pipeline.call([])
+
+    assert conn.status == 301
+  end
 end
