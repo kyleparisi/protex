@@ -37,7 +37,6 @@ defmodule MyPlug do
             send_resp(conn, 301, "")
 
           {:render, template_path, data} ->
-            IO.inspect(Map.to_list(data))
             body = EEx.eval_file(template_path, assigns: Map.to_list(data))
             send_resp(conn, 200, "#{String.trim(body)}")
 

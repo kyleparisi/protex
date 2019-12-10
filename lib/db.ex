@@ -10,21 +10,21 @@ defmodule DB do
   end
 
   def query(query, repo, params \\ []) do
-    MyXQL.query(repo, query, params) |> to_maps
+    MyXQL.query!(repo, query, params) |> to_maps
   end
 
   # Insert
-  def to_maps({:ok, %MyXQL.Result{last_insert_id: id, columns: nil, rows: nil}}) when id > 0 do
+  def to_maps(%MyXQL.Result{last_insert_id: id, columns: nil, rows: nil}) when id > 0 do
     %{id: id}
   end
 
   # Update/Delete
-  def to_maps({:ok, %MyXQL.Result{last_insert_id: 0, columns: nil, rows: nil}}) do
+  def to_maps(%MyXQL.Result{last_insert_id: 0, columns: nil, rows: nil}) do
     :ok
   end
 
   # Select
-  def to_maps({:ok, %MyXQL.Result{columns: columns, rows: rows}}) do
+  def to_maps(%MyXQL.Result{columns: columns, rows: rows}) do
     Enum.map(rows, fn row ->
       columns
       |> Enum.zip(row)

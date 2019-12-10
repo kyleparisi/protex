@@ -16,4 +16,4 @@ mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrat
 mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/session.sql
 
 echo Running tests:
-mix test
+mix test --trace
