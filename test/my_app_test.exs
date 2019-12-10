@@ -27,7 +27,6 @@ defmodule MyAppTest do
       |> conn("/login", "")
       |> Pipeline.call([])
 
-    assert conn.status == 422
     assert String.contains?(conn.resp_body, ["Missing email", "Missing password"])
   end
 
@@ -37,7 +36,6 @@ defmodule MyAppTest do
       |> conn("/login", %{email: "", password: ""})
       |> Pipeline.call([])
 
-    assert conn.status == 422
     assert String.contains?(conn.resp_body, ["Missing email", "Missing password"])
   end
 
@@ -47,7 +45,6 @@ defmodule MyAppTest do
       |> conn("/login", %{email: "test"})
       |> Pipeline.call([])
 
-    assert conn.status == 422
     assert !String.contains?(conn.resp_body, ["Missing email"])
     assert String.contains?(conn.resp_body, ["Missing password"])
   end
@@ -58,7 +55,6 @@ defmodule MyAppTest do
       |> conn("/sign-up", "")
       |> Pipeline.call([])
 
-    assert conn.status == 422
     assert String.contains?(conn.resp_body, ["Missing email", "Missing password"])
   end
 
@@ -81,6 +77,5 @@ defmodule MyAppTest do
 
     IO.inspect conn.resp_body
     assert String.contains?(conn.resp_body, ["User already exists"])
-    assert conn.status == 422
   end
 end
