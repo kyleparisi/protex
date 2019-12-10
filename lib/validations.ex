@@ -26,14 +26,20 @@ defmodule Validations do
 
   def validate_email(key, value) do
     {bool, _code} =
-      System.cmd("php", [
-        "-r",
-        "echo filter_var('#{value}', FILTER_VALIDATE_EMAIL) ? 'true' : 'false';"
-      ])
+      try do
+        System.cmd("php", [
+          "-r",
+          "echo filter_var('#{value}', FILTER_VALIDATE_EMAIL) ? 'true' : 'false';"
+        ])
+      rescue
+        _ ->
+          {"true", 0}
+      end
 
     case bool do
       "false" -> {key, {:error, "'#{value}' is not considered a valid email."}}
       "true" -> {key, value}
+      _ -> {key, value}
     end
   end
 
