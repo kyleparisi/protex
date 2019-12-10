@@ -1,6 +1,8 @@
 defmodule Router do
   import Validations
 
+  require Logger
+
   def validate_body("POST", ["login"], conn),
     do: [
       validate_not_empty("email", conn.body_params["email"]),
@@ -34,9 +36,12 @@ defmodule Router do
     "SELECT * FROM user where id = ?" |> DB.query(:db, [conn.path_params["id"]]) |> hd
   end
 
-  def match("POST", ["echo"], conn) do
-    IO.inspect(conn.body_params)
-    conn.body_params
+  def match("GET", "/login", conn) do
+    {:render, "views/login.html.eex", %{}}
+  end
+
+  def match("POST", ["login"], %{assigns: %{errors: errors}} = conn) do
+    {:render, "views/login.html.eex", %{errors: errors, email: conn.body_params["email"]}}
   end
 
   def match("GET", ["sign-up"], _conn) do
@@ -56,15 +61,17 @@ defmodule Router do
     if not_a_user do
       hash = Argon2.hash_pwd_salt(password)
 
-      %{id: id} = "INSERT INTO user SET email=?, password=?, forgot_token=?, verified_email=?, role='user'"
-      |> DB.query(:db, [email, hash, "", false])
+      %{id: id} =
+        "INSERT INTO user SET email=?, password=?, forgot_token=?, verified_email=?, role='user'"
+        |> DB.query(:db, [email, hash, "", false])
 
-      IO.inspect "user id: #{id}"
       conn = Plug.Conn.put_session(conn, :user_id, id)
 
       {:conn, conn, {:redirect, "/dashboard"}}
     else
-      {:render, "views/sign-up.html.eex", %{errors: %{exists: "User already exists."}, email: email}}
+      Logger.info("User already exists. #{email}")
+      {:render, "views/sign-up.html.eex",
+       %{errors: %{"exists" => "User already exists."}, email: email}}
     end
   end
 

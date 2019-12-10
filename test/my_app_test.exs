@@ -75,7 +75,6 @@ defmodule MyAppTest do
       |> conn("/sign-up", %{email: "test@test.com", password: "test"})
       |> Pipeline.call([])
 
-    IO.inspect conn.resp_body
     assert String.contains?(conn.resp_body, ["User already exists"])
   end
 end

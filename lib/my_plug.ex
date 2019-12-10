@@ -20,7 +20,6 @@ defmodule MyPlug do
       ["application/json"] ->
         case res do
           {:render, _template_path, data} ->
-            IO.inspect(data)
             json_resp(conn, 200, data)
 
           _ ->
@@ -38,13 +37,15 @@ defmodule MyPlug do
             send_resp(conn, 301, "")
 
           {:render, template_path, data} ->
+            IO.inspect(Map.to_list(data))
             body = EEx.eval_file(template_path, assigns: Map.to_list(data))
-            send_resp(conn, 200, "#{body}")
+            send_resp(conn, 200, "#{String.trim(body)}")
 
           {http_code, body} ->
             case body do
               json when is_map(json) ->
                 json_resp(conn, http_code, json)
+
               _ ->
                 send_resp(conn, http_code, "#{body}\n")
             end
