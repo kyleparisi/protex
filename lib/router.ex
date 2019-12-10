@@ -3,6 +3,21 @@ defmodule Router do
 
   require Logger
 
+  @doc """
+  # Middleware
+  """
+  def is_logged_in(next), do: fn conn ->
+    session = Plug.Conn.get_session(conn)
+    if Map.get(session, "user_id", false) do
+      next.()
+    else
+      {:redirect, "/login"}
+    end
+  end
+
+  @doc """
+  # Validate Body
+  """
   def validate_body("POST", ["login"], conn),
     do: [
       validate_not_empty("email", conn.body_params["email"]),
@@ -17,6 +32,9 @@ defmodule Router do
 
   def validate_body(_, _, _), do: []
 
+  @doc """
+  # Validate Path
+  """
   def validate_path("GET", ["user", id], _conn), do: [validate_integer("id", id)]
   def validate_path(_, _, _), do: []
 
@@ -24,6 +42,9 @@ defmodule Router do
     "Ok"
   end
 
+  @doc """
+  # Routes
+  """
   def match("GET", "login", _conn) do
     {:render, "views/login.html.eex", %{}}
   end
@@ -90,6 +111,11 @@ defmodule Router do
     conn = Plug.Conn.put_session(conn, :test, str)
     {:conn, conn, Plug.Conn.get_session(conn)}
   end
+
+  def match("GET", ["dashboard"], conn), do: is_logged_in(fn ->
+    IO.puts "wat"
+    IO.inspect(Plug.Conn.get_session(conn))
+  end)
 
   def match(_, _, _) do
     {:not_found, "Not Found"}

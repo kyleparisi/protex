@@ -7,6 +7,13 @@ defmodule MyPlug do
   def call(conn, _opts) do
     res = Router.match(conn.method, conn.path_info, conn)
 
+    # functional middleware
+    res = if is_function(res) do
+      res.(conn)
+    else
+      res
+    end
+
     # things like put_session modify the connection, so a mechanism to replace the
     # connection in the plug is needed
     {conn, res} =
