@@ -1,38 +1,6 @@
-<% import Includes %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
+<%= @extends.("layouts.marketing") %>
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="">
-
-    <title></title>
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/tachyons.min.css">
-    <link rel="stylesheet" href="css/app.css">
-    <style>
-        @import url('https://rsms.me/inter/inter.css');
-        html { font-family: 'Inter', sans-serif; }
-        @supports (font-variation-settings: normal) {
-            html { font-family: 'Inter var', sans-serif; }
-        }
-    </style>
-
-    <!-- Scripts -->
-
-</head>
-<body>
-<div class="absolute top-0 left-0 bg-dark-blue w-100" style="height: 0.5rem"></div>
-
-<nav class="w-80 pt5-ns center cf">
-
-</nav>
-
+<% @section.("content") %>
 <div class="min-vh-100">
 
     <div class="w-90 w-75-m w-third-l center mt5">
@@ -84,8 +52,4 @@
     </div>
 
 </div>
-
-<%= footer() || "" %>
-
-</body>
-</html>
+<% @endsection.() %>

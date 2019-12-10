@@ -2,6 +2,30 @@ defmodule MyPlug do
   import Plug.Conn
   import Responses
 
+  def include(path) do
+    IO.inspect path
+    IO.inspect String.replace(path, ".", "/")
+    path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
+    EEx.eval_file(path)
+  end
+
+  def extends(path) do
+    path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
+    body = EEx.eval_file(path, assigns: %{include: &MyPlug.include/1, section: &section/1, endsection: &endsection/0, yield: &yield/1})
+  end
+
+  def section(name) do
+    "<% #{name} = "
+  end
+
+  def endsection() do
+    "%>"
+  end
+
+  def yield(name) do
+    "<%= #{name} %>"
+  end
+
   def init(opts), do: opts
 
   def call(conn, _opts) do
@@ -45,6 +69,7 @@ defmodule MyPlug do
             send_resp(conn, 301, "")
 
           {:render, template_path, data} ->
+            data = Map.merge(data, %{include: &include/1, section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: &extends/1})
             body = EEx.eval_file(template_path, assigns: Map.to_list(data))
             send_resp(conn, 200, "#{String.trim(body)}")
 

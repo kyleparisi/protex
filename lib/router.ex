@@ -47,7 +47,7 @@ defmodule Router do
   @doc """
   # Routes
   """
-  def match("GET", "login", _conn) do
+  def match("GET", ["login"], _conn) do
     {:render, "views/login.html.eex", %{}}
   end
 
