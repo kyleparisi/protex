@@ -24,18 +24,6 @@ defmodule Router do
     "Ok"
   end
 
-  def match("GET", ["hello", name], _conn) do
-    "Hello #{name}"
-  end
-
-  def match("GET", ["hello2", name], _conn) do
-    {:render, "views/hello.html.eex", %{name: name}}
-  end
-
-  def match("GET", ["user", _id], conn) do
-    "SELECT * FROM user where id = ?" |> DB.query(:db, [conn.path_params["id"]]) |> hd
-  end
-
   def match("GET", "login", _conn) do
     {:render, "views/login.html.eex", %{}}
   end
