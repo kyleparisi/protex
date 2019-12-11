@@ -25,6 +25,9 @@ defmodule MyPlug do
     ~s(<%= @get.("#{name}"\) %>)
   end
 
+  def get(id), do: fn (key) -> ViewEngine.get(id, key) end
+  def set(id), do: fn (key, value) -> ViewEngine.set(id, key, value) end
+
   def init(opts), do: opts
 
   def call(conn, _opts) do
@@ -68,7 +71,11 @@ defmodule MyPlug do
             send_resp(conn, 301, "")
 
           {:render, template_path, data} ->
-            data = Map.merge(data, %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: extends(data), set: &ViewEngine.set/2, get: &ViewEngine.get/1})
+            engine_name = String.to_atom(template_path)
+            if Process.whereis(engine_name) == nil do
+              ViewEngine.start_link(%{"path" => template_path}, name: engine_name)
+            end
+            data = Map.merge(data, %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: extends(data), set: set(engine_name), get: get(engine_name)})
             # First pass to establish set statements
             set_statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
             # Second pass to execute set statements

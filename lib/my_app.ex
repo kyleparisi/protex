@@ -15,8 +15,7 @@ defmodule MyApp.App do
        password: System.get_env("DB_PASSWORD"),
        database: System.get_env("DB_DATABASE"),
        name: :db},
-      {Phoenix.PubSub, name: MyApp.PubSub},
-      ViewEngine
+      {Phoenix.PubSub, name: MyApp.PubSub}
     ]
 
     opts = [strategy: :one_for_one, name: MyApp.Supervisor]

@@ -1,14 +1,14 @@
 defmodule ViewEngine do
   use GenServer
 
-  def start_link(init_args) do
-    GenServer.start_link(__MODULE__, init_args, name: :view_engine)
+  def start_link(init_args, opts) do
+    GenServer.start_link(__MODULE__, init_args, opts)
   end
 
   def init([]) do
     {:ok, %{}}
   end
-  def init(state) do
+  def init(%{"path" => path} = state) do
     {:ok, state}
   end
 
@@ -21,7 +21,7 @@ defmodule ViewEngine do
   end
 
   # Client
-  def get(key), do: GenServer.call(:view_engine, {:get, key})
-  def set(key, value), do: GenServer.cast(:view_engine, {:set, key, value})
+  def get(name, key), do: GenServer.call(name, {:get, key})
+  def set(name, key, value), do: GenServer.cast(name, {:set, key, value})
 
 end
