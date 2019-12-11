@@ -5,10 +5,7 @@ defmodule ViewEngine do
     GenServer.start_link(__MODULE__, init_args, opts)
   end
 
-  def init([]) do
-    {:ok, %{}}
-  end
-  def init(%{"path" => path} = state) do
+  def init(state) do
     {:ok, state}
   end
 
@@ -23,5 +20,4 @@ defmodule ViewEngine do
   # Client
   def get(name, key), do: GenServer.call(name, {:get, key})
   def set(name, key, value), do: GenServer.cast(name, {:set, key, value})
-
 end

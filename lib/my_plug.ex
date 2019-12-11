@@ -2,15 +2,25 @@ defmodule MyPlug do
   import Plug.Conn
   import Responses
 
-  def include(data), do: fn path ->
-    path = String.replace(path, ".", "/")
-    EEx.eval_file("./views/#{path}.html.eex")
-  end
+  def include(_data),
+    do: fn path ->
+      path = String.replace(path, ".", "/")
+      EEx.eval_file("./views/#{path}.html.eex")
+    end
 
-  def extends(data), do: fn path ->
-    path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
-    EEx.eval_file(path, assigns: %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1})
-  end
+  def extends(data),
+    do: fn path ->
+      path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
+
+      EEx.eval_file(path,
+        assigns: %{
+          include: include(data),
+          section: &section/1,
+          endsection: &endsection/0,
+          yield: &yield/1
+        }
+      )
+    end
 
   def section(name) do
     ~s(<% @set.("#{name}",
@@ -25,8 +35,8 @@ defmodule MyPlug do
     ~s(<%= @get.("#{name}"\) %>)
   end
 
-  def get(id), do: fn (key) -> ViewEngine.get(id, key) end
-  def set(id), do: fn (key, value) -> ViewEngine.set(id, key, value) end
+  def get(id), do: fn key -> ViewEngine.get(id, key) end
+  def set(id), do: fn key, value -> ViewEngine.set(id, key, value) end
 
   def init(opts), do: opts
 
@@ -72,10 +82,26 @@ defmodule MyPlug do
 
           {:render, template_path, data} ->
             engine_name = String.to_atom(template_path)
+
             if Process.whereis(engine_name) == nil do
               ViewEngine.start_link(%{"path" => template_path}, name: engine_name)
             end
-            data = Map.merge(data, %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: extends(data), set: set(engine_name), get: get(engine_name)})
+
+            data =
+              Map.merge(
+                %{
+                  include: include(data),
+                  section: &section/1,
+                  endsection: &endsection/0,
+                  yield: &yield/1,
+                  extends: extends(data),
+                  set: set(engine_name),
+                  get: get(engine_name),
+                  errors: %{}
+                },
+                data
+              )
+
             # First pass to establish set statements
             set_statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
             # Second pass to execute set statements
