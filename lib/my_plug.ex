@@ -18,12 +18,10 @@ defmodule MyPlug do
   end
 
   def endsection() do
-    IO.puts "endsection"
     ~s("""\) %>)
   end
 
   def yield(name) do
-    IO.puts "yield"
     ~s(<%= @get.("#{name}"\) %>)
   end
 
@@ -71,10 +69,12 @@ defmodule MyPlug do
 
           {:render, template_path, data} ->
             data = Map.merge(data, %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: extends(data), set: &ViewEngine.set/2, get: &ViewEngine.get/1})
-            body = EEx.eval_file(template_path, assigns: Map.to_list(data))
-#            IO.inspect body
-            str = EEx.eval_string(body, assigns: Map.to_list(data))
-            IO.inspect str
+            # First pass to establish set statements
+            set_statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
+            # Second pass to execute set statements
+            EEx.eval_string(set_statements, assigns: Map.to_list(data))
+            # Third pass to execute to render the template
+            str = EEx.eval_string(set_statements, assigns: Map.to_list(data))
             send_resp(conn, 200, "#{String.trim(str)}")
 
           {http_code, body} ->
