@@ -40,9 +40,10 @@
     </nav>
 
     <div class="min-vh-100">
+        <%= @yield.("content") %>
     </div>
 
-    <%= @include.('includes.footer') %>
+    <%= @include.("includes/footer") %>
 </div>
 
 </body>

@@ -2,24 +2,23 @@ defmodule MyPlug do
   import Plug.Conn
   import Responses
 
-  def include(path) do
-    IO.inspect path
-    IO.inspect String.replace(path, ".", "/")
-    path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
-    EEx.eval_file(path)
+  def include(data), do: fn path ->
+    path = String.replace(path, ".", "/")
+    EEx.eval_file("./views/#{path}.html.eex")
   end
 
-  def extends(path) do
+  def extends(data), do: fn path ->
     path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
-    body = EEx.eval_file(path, assigns: %{include: &MyPlug.include/1, section: &section/1, endsection: &endsection/0, yield: &yield/1})
+    EEx.eval_file(path, assigns: %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1})
   end
 
   def section(name) do
-    "<% #{name} = "
+    ~s(<% #{name} = ~s""")
   end
 
   def endsection() do
-    "%>"
+    IO.puts "endsection"
+    ~S(<% """ %>)
   end
 
   def yield(name) do
@@ -69,8 +68,11 @@ defmodule MyPlug do
             send_resp(conn, 301, "")
 
           {:render, template_path, data} ->
-            data = Map.merge(data, %{include: &include/1, section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: &extends/1})
+            data = Map.merge(data, %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: extends(data)})
             body = EEx.eval_file(template_path, assigns: Map.to_list(data))
+            IO.inspect body
+            str = EEx.eval_string(body, Map.to_list(data))
+            IO.inspect str
             send_resp(conn, 200, "#{String.trim(body)}")
 
           {http_code, body} ->

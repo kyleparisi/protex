@@ -1,6 +1,6 @@
 <%= @extends.("layouts.marketing") %>
 
-<% @section.("content") %>
+<%= @section.("content") %>
 <div class="min-vh-100">
 
     <div class="w-90 w-75-m w-third-l center mt5">
@@ -52,4 +52,4 @@
     </div>
 
 </div>
-<% @endsection.() %>
+<%= @endsection.() %>
