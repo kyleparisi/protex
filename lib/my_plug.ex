@@ -83,6 +83,9 @@ defmodule MyPlug do
           {:render, template_path, data} ->
             engine_name = String.to_atom(template_path)
 
+            # View engine needs to be unique per template to not have overlapping `@section`
+            # with the same name.  This needs to be refactored at some point and it's probably
+            # barely working.  Will revisit as needed.
             if Process.whereis(engine_name) == nil do
               ViewEngine.start_link(%{"path" => template_path}, name: engine_name)
             end
