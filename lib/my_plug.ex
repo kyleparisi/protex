@@ -13,16 +13,18 @@ defmodule MyPlug do
   end
 
   def section(name) do
-    ~s(<% #{name} = ~s""")
+    ~s(<% @set.("#{name}",
+    ~s""")
   end
 
   def endsection() do
     IO.puts "endsection"
-    ~S(<% """ %>)
+    ~s("""\) %>)
   end
 
   def yield(name) do
-    "<%= #{name} %>"
+    IO.puts "yield"
+    ~s(<%= @get.("#{name}"\) %>)
   end
 
   def init(opts), do: opts
@@ -68,12 +70,12 @@ defmodule MyPlug do
             send_resp(conn, 301, "")
 
           {:render, template_path, data} ->
-            data = Map.merge(data, %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: extends(data)})
+            data = Map.merge(data, %{include: include(data), section: &section/1, endsection: &endsection/0, yield: &yield/1, extends: extends(data), set: &ViewEngine.set/2, get: &ViewEngine.get/1})
             body = EEx.eval_file(template_path, assigns: Map.to_list(data))
-            IO.inspect body
-            str = EEx.eval_string(body, Map.to_list(data))
+#            IO.inspect body
+            str = EEx.eval_string(body, assigns: Map.to_list(data))
             IO.inspect str
-            send_resp(conn, 200, "#{String.trim(body)}")
+            send_resp(conn, 200, "#{String.trim(str)}")
 
           {http_code, body} ->
             case body do
