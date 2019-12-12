@@ -16,15 +16,16 @@
         <div class="pa4">
             <h4 class="tc near-black fw1">Welcome Back!</h4>
 
-            <div class="red pb2"><%= @errors["invalid"] || "" %></div>
+            <div class="red pb2">{{ @errors["invalid"] || "" }}</div>
             <form method="post">
                 <div class="pb3">
                     <div>
                         <label for="email" class="f6">Email</label>
                     </div>
                     <input title="email" name="email" type="email"
-                           class="input-reset ba b--black-10 pa2 bg-light-gray b0 w-100"/>
-                    <div class="red"><%= @errors["email"] || "" %></div>
+                           class="input-reset ba b--black-10 pa2 bg-light-gray b0 w-100"
+                           value="{{ @email }}"/>
+                    <div class="red">{{ @errors["email"] || "" }}</div>
                 </div>
                 <div class="pb3">
                     <div>
@@ -32,7 +33,7 @@
                     </div>
                     <input title="password" name="password" type="password"
                            class="input-reset ba b--black-10 pa2 bg-light-gray b0 w-100"/>
-                    <div class="red"><%= @errors["password"] || "" %></div>
+                    <div class="red">{{ @errors["password"] || "" }}</div>
                 </div>
                 <div class="pb3 flex items-center">
                     <input title="remember" name="remember" type="checkbox" class="mr2">
