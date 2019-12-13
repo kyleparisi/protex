@@ -25,11 +25,10 @@ defmodule ViewEngine do
       EEx.eval_file("./views/#{path}.html.eex")
     end
 
-  def extends(data),
-    do: fn path ->
-      path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
-      File.read!(path)
-    end
+  def extends(path) do
+    path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
+    File.read!(path)
+  end
 
   def section(name) do
     ~s(<% @set.("#{name}",
@@ -68,7 +67,7 @@ defmodule ViewEngine do
           section: &section/1,
           endsection: &endsection/0,
           yield: &yield/1,
-          extends: extends(data),
+          extends: &extends/1,
           set: set(engine_name),
           get: get(engine_name),
           errors: %{}
