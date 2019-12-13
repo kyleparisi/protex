@@ -26,9 +26,7 @@ defmodule MyApp.MixProject do
       {:poison, "~> 3.1"},
       {:myxql, "~> 0.2.0"},
       {:phoenix_pubsub, "~> 2.0-dev", github: "phoenixframework/phoenix_pubsub"},
-      {:argon2_elixir, "~> 2.0"},
-
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:argon2_elixir, "~> 2.0"}
     ]
   end
 end
