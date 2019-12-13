@@ -15,7 +15,7 @@ defmodule ViewEngine do
   end
 
   def handle_cast({:set, key, value}, state) do
-    {:noreply, Map.put_new(state, key, value)}
+    {:noreply, Map.put(state, key, value)}
   end
 
   # Template API

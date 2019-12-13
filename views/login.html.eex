@@ -40,7 +40,7 @@
                     <label for="remember" class="f6">Remember me</label>
                 </div>
                 <div class="pb3">
-                    <button type="submit" class="w-100">Login</button>
+                    <button type="submit" class="button bg-dark-blue w-100">Login</button>
                 </div>
             </form>
 

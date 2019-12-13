@@ -1,11 +1,10 @@
-button {
+.button {
     position: relative;
     border: none;
     border-radius: 4px;
     outline: none;
     text-decoration: none;
     color: #fff;
-    background: #32325d;
     white-space: nowrap;
     display: inline-block;
     height: 40px;
@@ -22,13 +21,12 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.button:hover {
     transform: translateY(-1px);
     box-shadow: 0 7px 14px rgba(50, 50, 93, .10), 0 3px 6px rgba(0, 0, 0, .08);
-    background-color: #43458b;
 }
 
-button:after {
+.button:after {
     position: absolute;
     left: calc(50% - 0.5em);
     top: 25%;
@@ -53,11 +51,11 @@ button:after {
     transition: opacity 0.15s ease-out;
 }
 
-button.busy {
+.button.busy {
     color: transparent;
 }
 
-button.busy:after {
+.button.busy:after {
     opacity: 1;
 }
 

@@ -67,7 +67,7 @@
 
                 </div>
                 <div class="pb3">
-                    <button type="submit" class="w-100">Sign Up</button>
+                    <button type="submit" class="button bg-dark-blue w-100">Sign Up</button>
                 </div>
             </form>
 
