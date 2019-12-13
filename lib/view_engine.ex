@@ -27,15 +27,7 @@ defmodule ViewEngine do
   def extends(data),
     do: fn path ->
       path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
-
-      EEx.eval_file(path,
-        assigns: %{
-          include: include(data),
-          section: &section/1,
-          endsection: &endsection/0,
-          yield: &yield/1
-        }
-      )
+      File.read!(path)
     end
 
   def section(name) do
@@ -47,7 +39,7 @@ defmodule ViewEngine do
     ~s("""\) %>)
   end
 
-  def yield(name) do
+  def yield(data), do: fn name ->
     ~s(<%= @get.("#{name}"\) %>)
   end
 
@@ -84,12 +76,11 @@ defmodule ViewEngine do
       )
 
     # First pass to establish set statements
-    set_statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
+    statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
     # Second pass to execute set statements
-    template = EEx.eval_string(set_statements, assigns: Map.to_list(data))
-    template = String.replace(template, "{{", "<%=") |> String.replace("}}", "%>")
-    # Third pass to execute to render the template
-    EEx.eval_string(template, assigns: Map.to_list(data)) |> String.trim()
+    EEx.eval_string(statements, assigns: Map.to_list(data))
+    # Third pass on the original template to render the template with stored sections
+    EEx.eval_string(statements, assigns: Map.to_list(data)) |> String.trim()
   end
 
   def get(name, key), do: GenServer.call(name, {:get, key})
