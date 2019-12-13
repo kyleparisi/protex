@@ -48,15 +48,15 @@ defmodule Router do
   # Routes
   """
   def match("GET", ["hello"], _conn) do
-    {:render, "views/hello.html.eex", %{name: "world!"}}
+    {:render, "hello", %{name: "world!"}}
   end
 
   def match("GET", ["login"], _conn) do
-    {:render, "views/login.html.eex", %{}}
+    {:render, "login", %{}}
   end
 
   def match("POST", ["login"], %{assigns: %{errors: errors}} = conn) do
-    {:render, "views/login.html.eex", %{errors: errors, email: conn.body_params["email"]}}
+    {:render, "login", %{errors: errors, email: conn.body_params["email"]}}
   end
 
   def match("POST", ["login"], conn) do
@@ -73,23 +73,23 @@ defmodule Router do
       {:not_a_user} ->
         Logger.info("Not a user login attempt. #{email}")
 
-        {:render, "views/login.html.eex",
+        {:render, "login",
          %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
 
       {:incorrect_password} ->
         Logger.info("Incorrect password login attempt. #{email}")
 
-        {:render, "views/login.html.eex",
+        {:render, "login",
          %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
     end
   end
 
   def match("GET", ["sign-up"], _conn) do
-    {:render, "views/sign-up.html.eex", %{}}
+    {:render, "sign-up", %{}}
   end
 
   def match("POST", ["sign-up"], %{assigns: %{errors: errors}} = conn) do
-    {:render, "views/sign-up.html.eex", %{errors: errors, email: conn.body_params["email"]}}
+    {:render, "sign-up", %{errors: errors, email: conn.body_params["email"]}}
   end
 
   def match("POST", ["sign-up"], conn) do
@@ -112,8 +112,7 @@ defmodule Router do
     else
       Logger.info("User already exists. #{email}")
 
-      {:render, "views/sign-up.html.eex",
-       %{errors: %{"exists" => "User already exists."}, email: email}}
+      {:render, "sign-up", %{errors: %{"exists" => "User already exists."}, email: email}}
     end
   end
 

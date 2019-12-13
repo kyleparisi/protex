@@ -46,7 +46,8 @@ defmodule ViewEngine do
   def set(id), do: fn key, value -> ViewEngine.set(id, key, value) end
 
   # Client
-  def start_engine(template_path) do
+  def start_engine(template_name) do
+    template_path = "views/#{template_name}.html.eex"
     engine_name = String.to_atom(template_path)
     # View engine needs to be unique per template to not have overlapping `@section("name")`
     # with the same name.  This needs to be refactored at some point and it's probably
@@ -56,7 +57,8 @@ defmodule ViewEngine do
     end
   end
 
-  def render(template_path, data) do
+  def render(template_name, data) do
+    template_path = "views/#{template_name}.html.eex"
     engine_name = String.to_atom(template_path)
 
     data =
