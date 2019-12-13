@@ -2,6 +2,9 @@ defmodule MyApp.App do
   use Application
 
   def start(_type, _args) do
+    Application.put_env(:myxql, :json_library, Poison)
+    Logger.configure_backend(:console, [format: "$time $metadata[$level] $levelpad$message\n"])
+
     children = [
       {Plug.Cowboy,
        scheme: :http,
