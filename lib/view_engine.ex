@@ -10,7 +10,8 @@ defmodule ViewEngine do
   end
 
   def handle_call({:get, key}, _from, state) do
-    {:reply, Map.get(state, key), state}
+    template = Map.get(state, key) |> String.replace("{{", "<%=") |> String.replace("}}", "%>")
+    {:reply, template, state}
   end
 
   def handle_cast({:set, key, value}, state) do
@@ -39,7 +40,7 @@ defmodule ViewEngine do
     ~s("""\) %>)
   end
 
-  def yield(data), do: fn name ->
+  def yield(name) do
     ~s(<%= @get.("#{name}"\) %>)
   end
 
@@ -78,9 +79,10 @@ defmodule ViewEngine do
     # First pass to establish set statements
     statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
     # Second pass to execute set statements
-    EEx.eval_string(statements, assigns: Map.to_list(data))
+    template = EEx.eval_string(statements, assigns: Map.to_list(data))
+    IO.inspect(template)
     # Third pass on the original template to render the template with stored sections
-    EEx.eval_string(statements, assigns: Map.to_list(data)) |> String.trim()
+    EEx.eval_string(template, assigns: Map.to_list(data)) |> String.trim()
   end
 
   def get(name, key), do: GenServer.call(name, {:get, key})
