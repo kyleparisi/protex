@@ -10,7 +10,7 @@ defmodule ViewEngine do
   end
 
   def handle_call({:get, key}, _from, state) do
-    template = Map.get(state, key) |> String.replace("{{", "<%=") |> String.replace("}}", "%>")
+    template = Map.get(state, key)
     {:reply, template, state}
   end
 
@@ -80,9 +80,10 @@ defmodule ViewEngine do
     statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
     # Second pass to execute set statements
     template = EEx.eval_string(statements, assigns: Map.to_list(data))
-    IO.inspect(template)
-    # Third pass on the original template to render the template with stored sections
-    EEx.eval_string(template, assigns: Map.to_list(data)) |> String.trim()
+    # Third pass on the template to render the template with stored sections
+    placeholders = EEx.eval_string(template, assigns: Map.to_list(data)) |> String.replace("{{", "<%=") |> String.replace("}}", "%>")
+    # Forth pass to render the data
+    EEx.eval_string(placeholders, assigns: Map.to_list(data)) |> String.trim
   end
 
   def get(name, key), do: GenServer.call(name, {:get, key})

@@ -27,7 +27,8 @@ defmodule MyAppTest do
       |> conn("/login", "")
       |> Pipeline.call([])
 
-    assert String.contains?(conn.resp_body, ["Missing email", "Missing password"])
+    assert String.contains?(conn.resp_body, "Please provide an email")
+    assert String.contains?(conn.resp_body, "Missing password")
   end
 
   test "/login with empty email and password" do
@@ -36,7 +37,8 @@ defmodule MyAppTest do
       |> conn("/login", %{email: "", password: ""})
       |> Pipeline.call([])
 
-    assert String.contains?(conn.resp_body, ["Missing email", "Missing password"])
+    assert String.contains?(conn.resp_body, "Please provide an email")
+    assert String.contains?(conn.resp_body, "Missing password")
   end
 
   test "/login with no password" do
@@ -45,8 +47,8 @@ defmodule MyAppTest do
       |> conn("/login", %{email: "test"})
       |> Pipeline.call([])
 
-    assert !String.contains?(conn.resp_body, ["Missing email"])
-    assert String.contains?(conn.resp_body, ["Missing password"])
+    assert !String.contains?(conn.resp_body, "Missing email")
+    assert String.contains?(conn.resp_body, "Missing password")
   end
 
   test "/sign-up with no email or password" do
@@ -55,7 +57,8 @@ defmodule MyAppTest do
       |> conn("/sign-up", "")
       |> Pipeline.call([])
 
-    assert String.contains?(conn.resp_body, ["Missing email", "Missing password"])
+    assert String.contains?(conn.resp_body, "Please provide an email")
+    assert String.contains?(conn.resp_body, "Missing password")
   end
 
   test "/sign-up" do
@@ -75,7 +78,7 @@ defmodule MyAppTest do
       |> conn("/sign-up", %{email: "test@test.com", password: "test"})
       |> Pipeline.call([])
 
-    assert String.contains?(conn.resp_body, ["User already exists"])
+    assert String.contains?(conn.resp_body, "User already exists")
   end
 
   test "/login" do
