@@ -19,11 +19,10 @@ defmodule ViewEngine do
   end
 
   # Template API
-  def include(_data),
-    do: fn path ->
-      path = String.replace(path, ".", "/")
-      EEx.eval_file("./views/#{path}.html.eex")
-    end
+  def include(path) do
+    path = String.replace(path, ".", "/")
+    EEx.eval_file("./views/#{path}.html.eex")
+  end
 
   def extends(path) do
     path = "./views/" <> String.replace(path, ".", "/") <> ".html.eex"
@@ -63,7 +62,7 @@ defmodule ViewEngine do
     data =
       Map.merge(
         %{
-          include: include(data),
+          include: &include/1,
           section: &section/1,
           endsection: &endsection/0,
           yield: &yield/1,
