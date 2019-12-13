@@ -1,4 +1,3 @@
-<% import Includes %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -83,7 +82,7 @@
 
 </div>
 
-<%= footer() || "" %>
+<%= @include.("includes/footer") %>
 
 </body>
 </html>

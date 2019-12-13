@@ -1,8 +1,13 @@
 defmodule MyPlug do
   import Plug.Conn
-  import Responses
 
   def init(opts), do: opts
+
+  def json_resp(conn, status, body) do
+    conn
+    |> put_resp_header("content-type", "application/json")
+    |> send_resp(status, Poison.encode!(body) <> "\n")
+  end
 
   def call(conn, _opts) do
     res = Router.match(conn.method, conn.path_info, conn)
