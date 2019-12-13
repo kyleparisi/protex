@@ -21,6 +21,16 @@ defmodule MyAppTest do
     assert conn.resp_body == "Ok\n"
   end
 
+  test "/hello" do
+    conn =
+      :get
+      |> conn("/hello", "")
+      |> Pipeline.call([])
+
+    assert conn.status == 200
+    assert String.contains?(conn.resp_body, "world!")
+  end
+
   test "/login with no email and password" do
     conn =
       :post

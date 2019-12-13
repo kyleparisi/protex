@@ -47,6 +47,10 @@ defmodule Router do
   @doc """
   # Routes
   """
+  def match("GET", ["hello"], _conn) do
+    {:render, "views/hello.html.eex", %{name: "world!"}}
+  end
+
   def match("GET", ["login"], _conn) do
     {:render, "views/login.html.eex", %{}}
   end
@@ -119,7 +123,7 @@ defmodule Router do
     {:conn, conn, Plug.Conn.get_session(conn)}
   end
 
-  def match("GET", ["dashboard"], conn),
+  def match("GET", ["dashboard"], _conn),
     do:
       is_logged_in(fn ->
         "Ok"

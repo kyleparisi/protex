@@ -76,14 +76,19 @@ defmodule ViewEngine do
         data
       )
 
+    data = Map.to_list(data)
     # First pass to establish set statements
-    statements = EEx.eval_file(template_path, assigns: Map.to_list(data))
+    statements = EEx.eval_file(template_path, assigns: data)
     # Second pass to execute set statements
-    template = EEx.eval_string(statements, assigns: Map.to_list(data))
+    template = EEx.eval_string(statements, assigns: data)
     # Third pass on the template to render the template with stored sections
-    placeholders = EEx.eval_string(template, assigns: Map.to_list(data)) |> String.replace("{{", "<%=") |> String.replace("}}", "%>")
+    placeholders =
+      EEx.eval_string(template, assigns: data)
+      |> String.replace("{{", "<%=")
+      |> String.replace("}}", "%>")
+
     # Forth pass to render the data
-    EEx.eval_string(placeholders, assigns: Map.to_list(data)) |> String.trim
+    EEx.eval_string(placeholders, assigns: data) |> String.trim()
   end
 
   def get(name, key), do: GenServer.call(name, {:get, key})

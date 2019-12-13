@@ -15,5 +15,8 @@ echo Running migrations:
 mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/user.sql
 mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/session.sql
 
+echo Running format:
+mix format
+
 echo Running tests:
 mix test --trace
