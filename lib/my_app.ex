@@ -10,7 +10,8 @@ defmodule MyApp.App do
        scheme: :http,
        plug: nil,
        options: [
-         dispatch: dispatch()
+         dispatch: dispatch(),
+         port: System.get_env("PORT") |> String.to_integer
        ]},
       {MyXQL,
        username: System.get_env("DB_USERNAME"),
