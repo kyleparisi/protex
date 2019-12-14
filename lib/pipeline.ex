@@ -6,7 +6,7 @@ defmodule Pipeline do
   use Plug.Builder
 
   plug(Plug.Logger)
-  plug(Plug.Session, store: MySession, key: "myapp")
+  plug(Plug.Session, store: MySession, key: System.get_env("APP_NAME") |> String.downcase())
   plug(:fetch_session)
   plug(Plug.Static, from: "public", at: "/")
   plug(PathValidator)
