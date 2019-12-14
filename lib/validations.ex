@@ -1,5 +1,7 @@
 defmodule Validations do
-  # # Generic validations
+  @doc """
+  # Generic Validations
+  """
   def validate_integer(key, value) do
     case Integer.parse(value) do
       :error -> {key, {:error, "could not parse #{value} as integer"}}
@@ -43,7 +45,9 @@ defmodule Validations do
     end
   end
 
-  # # Business validations
+  @doc """
+  # Business Validations
+  """
   def validate_login({:valid_password, true, user}) do
     {:ok, user}
   end
