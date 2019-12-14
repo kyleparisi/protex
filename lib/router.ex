@@ -51,6 +51,10 @@ defmodule Router do
     {:render, "hello", %{name: "world!"}}
   end
 
+  def match("GET", [], _conn) do
+    {:render, "index", %{}}
+  end
+
   def match("GET", ["login"], _conn) do
     {:render, "login", %{}}
   end

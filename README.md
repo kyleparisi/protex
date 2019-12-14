@@ -37,7 +37,8 @@ bash cli.sh clean_old_sessions
 
 ## Views
 
-There is special syntax to render views similar to Laravel's blade templates.
+There is special syntax to render views similar to Laravel's blade templates.  Otherwise, [EEx
+template](https://hexdocs.pm/eex/EEx.html) syntax should work.
 
 #### Data
 
