@@ -11,7 +11,7 @@ defmodule MyApp.App do
        plug: nil,
        options: [
          dispatch: dispatch(),
-         port: System.get_env("PORT") |> String.to_integer
+         port: System.get_env("PORT") |> String.to_integer()
        ]},
       {MyXQL,
        username: System.get_env("DB_USERNAME"),
