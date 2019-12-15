@@ -14,6 +14,7 @@ done
 echo Running migrations:
 mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/user.sql
 mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/session.sql
+mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD -D $DB_DATABASE < ./test/migrations/remember.sql
 
 echo Running format:
 mix format

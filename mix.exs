@@ -15,7 +15,7 @@ defmodule MyApp.MixProject do
   def application do
     [
       mod: {MyApp.App, []},
-      extra_applications: [:logger, :cowboy, :plug, :poison]
+      extra_applications: [:logger, :cowboy, :plug, :poison, :timex]
     ]
   end
 
@@ -26,7 +26,8 @@ defmodule MyApp.MixProject do
       {:poison, "~> 3.1"},
       {:myxql, "~> 0.2.0"},
       {:phoenix_pubsub, "~> 2.0-dev", github: "phoenixframework/phoenix_pubsub"},
-      {:argon2_elixir, "~> 2.0"}
+      {:argon2_elixir, "~> 2.0"},
+      {:timex, "~> 3.5"}
     ]
   end
 end

@@ -8,6 +8,7 @@ defmodule Pipeline do
   plug(Plug.Logger)
   plug(Plug.Session, store: MySession, key: System.get_env("APP_NAME") |> String.downcase())
   plug(:fetch_session)
+  plug(Remember)
   plug(Plug.Static, from: "public", at: "/")
   plug(PathValidator)
   plug(Plug.Parsers, parsers: [:json, :urlencoded], json_decoder: Poison)
