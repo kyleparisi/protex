@@ -6,7 +6,6 @@ defmodule Remember do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    IO.inspect(conn.req_cookies)
     remember = Map.get(conn.req_cookies, "remember", false)
     remembered_user = if remember do
       "SELECT * FROM remember WHERE `key` = ? LIMIT 1;" |> DB.query(:db, [remember])
