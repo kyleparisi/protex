@@ -75,9 +75,10 @@ defmodule Router do
         conn = if Map.has_key?(conn.body_params, "remember") do
           key = :crypto.strong_rand_bytes(32) |> Base.encode64()
           expires = Timex.now |> Timex.shift(weeks: 2) |> DateTime.to_unix
+          max_age = 60 * 60 * 24 * 14
           user_id = user["id"]
           "INSERT INTO remember SET `key` = ?, expires = ?, user_id = ?" |> DB.query(:db, [key, expires, user_id])
-          Plug.Conn.put_resp_cookie(conn, "remember", key, max_age: expires)
+          Plug.Conn.put_resp_cookie(conn, "remember", key, max_age: max_age)
         else
           conn
         end
