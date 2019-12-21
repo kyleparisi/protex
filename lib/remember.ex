@@ -18,7 +18,7 @@ defmodule Remember do
       remembered_user = remembered_user |> hd
       expires = Timex.now |> Timex.shift(weeks: 2) |> DateTime.to_unix
       "UPDATE remember SET expires = ? WHERE `key` = ? LIMIT 1;" |> DB.query(:db, [expires, remember])
-      Plug.Conn.put_session(conn, :user_id, remembered_user["user_id"])
+      conn = Plug.Conn.put_session(conn, :user_id, remembered_user["user_id"])
       Plug.Conn.put_resp_cookie(conn, "remember", remember, [max_age: expires])
     end
   end
