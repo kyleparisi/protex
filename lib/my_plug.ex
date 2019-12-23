@@ -55,6 +55,7 @@ defmodule MyPlug do
             data =
               Map.merge(
                 %{
+                  body_params: conn.body_params,
                   session: Plug.Conn.get_session(conn)
                 },
                 data

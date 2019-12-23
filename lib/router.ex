@@ -60,7 +60,7 @@ defmodule Router do
   end
 
   def match("POST", ["login"], %{assigns: %{errors: errors}} = conn) do
-    {:render, "login", %{errors: errors, email: conn.body_params["email"]}}
+    {:render, "login", %{errors: errors}}
   end
 
   def match("POST", ["login"], conn) do
@@ -94,14 +94,12 @@ defmodule Router do
       {:not_a_user} ->
         Logger.info("Not a user login attempt. #{email}")
 
-        {:render, "login",
-         %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
+        {:render, "login", %{errors: %{"invalid" => "Email or password is incorrect."}}}
 
       {:incorrect_password} ->
         Logger.info("Incorrect password login attempt. #{email}")
 
-        {:render, "login",
-         %{errors: %{"invalid" => "Email or password is incorrect."}, email: email}}
+        {:render, "login", %{errors: %{"invalid" => "Email or password is incorrect."}}}
     end
   end
 

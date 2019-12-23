@@ -24,7 +24,7 @@
                     </div>
                     <input title="email" name="email" type="email"
                            class="input-reset ba b--black-10 pa2 bg-light-gray b0 w-100"
-                           value="{{ @email }}"/>
+                           value='{{ @body_params["email"] }}'/>
                     <div class="red">{{ @errors["email"] || "" }}</div>
                 </div>
                 <div class="pb3">
