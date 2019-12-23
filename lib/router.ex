@@ -72,16 +72,23 @@ defmodule Router do
     case validate_login({:is_a_user, is_a_user, user, password}) do
       {:ok, user} ->
         conn = Plug.Conn.put_session(conn, :user_id, user["id"])
-        conn = if Map.has_key?(conn.body_params, "remember") do
-          key = :crypto.strong_rand_bytes(32) |> Base.encode64()
-          expires = Timex.now |> Timex.shift(weeks: 2) |> DateTime.to_unix
-          max_age = 60 * 60 * 24 * 14
-          user_id = user["id"]
-          "INSERT INTO remember SET `key` = ?, expires = ?, user_id = ?" |> DB.query(:db, [key, expires, user_id])
-          Plug.Conn.put_resp_cookie(conn, "remember", key, max_age: max_age)
-        else
-          conn
-        end
+        conn = Plug.Conn.put_session(conn, :user, user)
+
+        conn =
+          if Map.has_key?(conn.body_params, "remember") do
+            key = :crypto.strong_rand_bytes(32) |> Base.encode64()
+            expires = Timex.now() |> Timex.shift(weeks: 2) |> DateTime.to_unix()
+            max_age = 60 * 60 * 24 * 14
+            user_id = user["id"]
+
+            "INSERT INTO remember SET `key` = ?, expires = ?, user_id = ?"
+            |> DB.query(:db, [key, expires, user_id])
+
+            Plug.Conn.put_resp_cookie(conn, "remember", key, max_age: max_age)
+          else
+            conn
+          end
+
         {:conn, conn, {:redirect, "/dashboard"}}
 
       {:not_a_user} ->

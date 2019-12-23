@@ -61,6 +61,16 @@ defmodule ViewEngine do
     template_path = "views/#{template_name}.html.eex"
     engine_name = String.to_atom(template_path)
 
+    # for flexibility, allow string or atom keys
+    data =
+      for {key, val} <- data, into: %{} do
+        if is_atom(key) do
+          {key, val}
+        else
+          {String.to_atom(key), val}
+        end
+      end
+
     data =
       Map.merge(
         %{

@@ -51,6 +51,15 @@ defmodule MyPlug do
 
           {:render, template_path, data} ->
             ViewEngine.start_engine(template_path)
+
+            data =
+              Map.merge(
+                %{
+                  session: Plug.Conn.get_session(conn)
+                },
+                data
+              )
+
             view = ViewEngine.render(template_path, data)
             send_resp(conn, 200, view)
 
