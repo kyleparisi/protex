@@ -42,6 +42,14 @@ defmodule ViewEngine do
     ~s(<%= @get.("#{name}"\) %>)
   end
 
+  def foreach(items) do
+    ~s({{ for #{items} do }})
+  end
+
+  def endforeach() do
+    ~s({{% end }})
+  end
+
   def get(id), do: fn key -> ViewEngine.get(id, key) end
   def set(id), do: fn key, value -> ViewEngine.set(id, key, value) end
 
@@ -78,6 +86,8 @@ defmodule ViewEngine do
           section: &section/1,
           endsection: &endsection/0,
           yield: &yield/1,
+          foreach: &foreach/1,
+          endforeach: &endforeach/0,
           extends: &extends/1,
           set: set(engine_name),
           get: get(engine_name),
@@ -94,6 +104,7 @@ defmodule ViewEngine do
     # Third pass on the template to render the template with stored sections
     placeholders =
       EEx.eval_string(template, assigns: data)
+      |> String.replace("{{%", "<%")
       |> String.replace("{{", "<%=")
       |> String.replace("}}", "%>")
 

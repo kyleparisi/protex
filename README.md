@@ -81,3 +81,11 @@ Section is used to define content of yield statements.
     <div>Hello world!</div>
 <%= @endsection.() %>
 ```
+
+#### Foreach
+
+```eex
+<%= @foreach.("item <- @items") %>
+    {{ item["name"] }}
+<%= @endforeach.() %>
+```
