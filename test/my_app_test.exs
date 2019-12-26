@@ -116,7 +116,7 @@ defmodule MyAppTest do
     conn =
       :get
       |> conn("/dashboard")
-      |> init_test_session(%{"user_id" => 1})
+      |> init_test_session(%{user: %{id: 1, email: "test@test.com"}})
       |> Pipeline.call([])
 
     assert conn.status == 200

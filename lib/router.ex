@@ -9,9 +9,10 @@ defmodule Router do
   def is_logged_in(next),
     do: fn conn ->
       session = Plug.Conn.get_session(conn)
+      user = Map.get(session, "user", false)
 
-      if Map.get(session, "user_id", false) do
-        next.()
+      if user do
+        next.(user)
       else
         {:redirect, "/login"}
       end
@@ -59,7 +60,7 @@ defmodule Router do
     {:render, "login", %{}}
   end
 
-  def match("POST", ["login"], %{assigns: %{errors: errors}} = conn) do
+  def match("POST", ["login"], %{assigns: %{errors: errors}} = _conn) do
     {:render, "login", %{errors: errors}}
   end
 
@@ -143,7 +144,7 @@ defmodule Router do
 
   def match("GET", ["dashboard"], _conn),
     do:
-      is_logged_in(fn ->
+      is_logged_in(fn _user ->
         "Ok"
       end)
 
