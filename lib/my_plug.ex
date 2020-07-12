@@ -45,6 +45,9 @@ defmodule MyPlug do
           json when is_map(json) ->
             json_resp(conn, 200, json)
 
+          json when is_list(json) ->
+            json_resp(conn, 200, json)
+
           {:redirect, location} ->
             conn = put_resp_header(conn, "location", location)
             send_resp(conn, 301, "")
@@ -67,6 +70,9 @@ defmodule MyPlug do
           {http_code, body} ->
             case body do
               json when is_map(json) ->
+                json_resp(conn, http_code, json)
+
+              json when is_list(json) ->
                 json_resp(conn, http_code, json)
 
               _ ->
