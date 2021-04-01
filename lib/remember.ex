@@ -35,4 +35,3 @@ defmodule Remember do
     handle_remember_cookie(Process.whereis(:db), conn, opts)
   end
 end
-

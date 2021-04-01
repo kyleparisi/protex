@@ -15,7 +15,7 @@ defmodule MyApp.MixProject do
   def application do
     [
       mod: {MyApp.App, []},
-      extra_applications: [:logger, :cowboy, :plug, :poison, :timex]
+      extra_applications: [:logger, :cowboy, :plug, :poison, :timex, :eex, :hackney]
     ]
   end
 
